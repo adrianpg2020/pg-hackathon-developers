@@ -3,6 +3,7 @@ App = {
   contracts: {},
   user: null,
   page: $("#page-content"),
+  pageAgreementForm: $("#agreement-form"),
 
   showLoader: () => {
     App.page.html("Loading...");
@@ -15,24 +16,46 @@ App = {
     return await App.initWeb3();
   },
 
+  populateAgreementForm: function (listing) {
+    App.pageAgreementForm.find('.listing-card img').attr('src', listing.media?.cover?.V550);
+    App.pageAgreementForm.find('#agreement-listing-title').html(listing.localizedTitle);
+    App.pageAgreementForm.find('#agreement-rental-amount').val(listing.price.pretty);
+    App.pageAgreementForm.find('#agreement-landlord-name').val(listing.property.developer);
+    
+  },
+
   loadAllListings: async function() {
     const [listings, agents] = await Promise.all([
       $.getJSON('../listings.json'), 
       $.getJSON('../agents.json')
     ]);
 
-    let html = `<div class="row">`
-    html += listings.map((i) => {
-      return `<div class="col-sm-4">
+    let cards = listings.map((i) => {
+      let button = $(`<button class="btn btn-primary" data-listing-id="${i.id}">Rent</button>`);
+      button.on('click', (e) => {
+        let listingId = e.target.dataset.listingId;
+        // call the method to load the agreement
+        App.populateAgreementForm(i);
+        App.page.replaceWith(App.pageAgreementForm.removeClass('hidden'));
+      });
+
+      let card = $(`<div class="col-sm-4">
         <div class="listing-card">
           <img src="${i.media?.cover?.V550}" />
-          <h4>${i.localizedTitle}</h4> 
-          <button class="btn btn-primary">Rent</button>
+          <h4>${i.localizedTitle}</h4>
         </div>
-      </div>`
-    }).join('\n');
-    html += `</div>`
-    App.page.html(html);
+      </div>`);
+
+      card.find('.listing-card').append(button);
+
+      return card;
+    });
+    console.log(cards);
+
+    let rows = $('<div class="row"></div>');
+    rows.append(cards);
+
+    App.page.html(rows);
 
     console.log('Listings: ', listings);
     console.log('Agents: ', agents);
