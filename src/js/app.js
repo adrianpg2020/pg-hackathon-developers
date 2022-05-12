@@ -6,6 +6,7 @@ App = {
   user: null,
   listings: [],
   agents: [],
+  agreements: [],
 
   page: $("#page-content"),
   pageAgreementForm: $("#agreement-form"),
@@ -48,14 +49,28 @@ App = {
   },
 
   loadAllListings: async function() {
+    await App.getAgreements();
+
+    App.agreements.forEach((item) => {
+      const listing = App.listings.find((listing) => listing.id === item.listing_id);
+      if(listing) {
+        listing.draft = true;
+      }
+    });
+
     let cards = App.listings.map((i) => {
+      let disabled = null;
+      if(i.draft === true || i.rented === true) {
+        disabled = "disabled";
+      }
       return `<div class="col-sm-4">
       <div class="listing-card">
         <img src="${i.media?.cover?.V550}" />
         <h4>${i.localizedTitle}</h4>
         <div class="price">${i.price.pretty}</div>
         <button class="btn btn-primary show-agreement-model" 
-        data-listing-id="${i.id}" data-toggle="modal" data-target="#agreement-form">Rent</button>
+        data-listing-id="${i.id}" data-toggle="modal" ${disabled}   
+        data-target="#agreement-form">Rent</button>
       </div>
     </div>`;
     });
@@ -82,7 +97,8 @@ App = {
         'agreement-rental-amount': App.pageAgreementForm.find('#agreement-rental-amount').val(),
         'rental-duration': App.pageAgreementForm.find("select#rental-duration option").filter(":selected").val(),  
       };
-      App.savingAgreements(agreementData);
+      await App.savingAgreement(agreementData);
+      $('#agreement-form').modal('hide')
       App.loadAllListings();
     }catch (error) {
       console.log(error);
@@ -90,20 +106,18 @@ App = {
     }
   },
 
-  savingAgreements: function(data) {
-    console.log(data);
-
-    fetch(`${PG_FIREBASE_DB}/agreements.json`, {
-      'method': 'POST',
-      'body': JSON.stringify(data),
-      'headers': {
-        'Content-Type': 'application/json',
-      }
-    });
+  savingAgreement: async function(data) {
+    await axios.post(`${PG_FIREBASE_DB}/agreements.json`, data);
   },
 
-  getAgreements: function() {
-    fetch(`${PG_FIREBASE_DB}/agreements.json`);
+  getAgreements: async function() {
+    const {data} = await axios.get(`${PG_FIREBASE_DB}/agreements.json`);
+    App.agreements = Object.keys(data).map(key => {
+      return {
+        _id: key,
+        ...data[key]
+      }
+    });
   },
     
   showAgreementModel: async function(e) {
