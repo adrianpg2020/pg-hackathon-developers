@@ -1,7 +1,7 @@
 .listing-card {
     padding: 15px;
     border: 1px solid #e5e5e5;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     border-radius: 4px;
 }
 .listing-card h4  {
@@ -16,4 +16,9 @@
     height: 250px;
     object-fit: cover;
     margin-bottom: 10px;
+}
+.listing-card .price {
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 16px;
 }
