@@ -1,98 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PG Hackathon</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
-  </head>
-  <body>
-    <div class="container">
-      <nav class="navbar navbar-default">
-        <div class="container-fluid">
-          <!-- Brand and toggle get grouped for better mobile display -->
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand nav-homepage" href="#">Home For Rent</a>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PG Hackathon</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/main.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+            data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand nav-homepage" href="#">Home For Rent</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" class="nav-homepage">Home</a></li>
+            <li><a href="#" class="nav-my-listings">My Listings</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+    <div id="page-content"></div>
+  </div>
+
+  <div class="modal fade" tabindex="-1" role="dialog" id="agreement-form">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Rent Agreement</h4>
+        </div>
+        <div class="modal-body">
+          <div>
+            <div class="listing-card">
+              <img src="" />
+              <h4 id="agreement-listing-title"></h4>
+            </div>
           </div>
-      
-          <!-- Collect the nav links, forms, and other content for toggling -->
-          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="#" class="nav-homepage">Home</a></li>
-              <li><a href="#" class="nav-my-listings">My Listings</a></li>
-            </ul>
-          </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-      </nav>
-      <div id="page-content"></div>
-    </div>
 
-    <div id="agreement-form" class="hidden">
-      <div>
-        <div class="listing-card">
-          <img src="" />
-          <h4 id="agreement-listing-title"></h4>
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Landlord</label>
+            <div class="col-sm-10">
+              <input id="agreement-landlord-name" type="text" readonly class="form-control-plaintext" value="">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Tenant</label>
+            <div class="col-sm-10">
+              <input type="text" id="tenant" class="form-control-plaintext" value="">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Rental Amount</label>
+            <div class="col-sm-10">
+              <input id="agreement-rental-amount" type="text" readonly class="form-control-plaintext" value="">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Rental Start Date</label>
+            <div class="col-sm-10">
+              <input id="agreement-rental-start-date" type="date" class="form-control-plaintext" value="">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Rental Duration</label>
+            <div class="col-sm-10">
+              <select id="rental-duration">
+                <option>6 Months</option>
+                <option>1 Year</option>
+                <option>2 Years</option>
+              </select>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Landlord</label>
-        <div class="col-sm-10">
-          <input id="agreement-landlord-name" type="text" readonly class="form-control-plaintext" value="">
+        <div class="modal-footer text-left">
+          <button type="button" class="btn btn-primary btn-agreement" data-id="">Request</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
-      </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
-      <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Tenant</label>
-        <div class="col-sm-10">
-          <input type="text" id="tenant" class="form-control-plaintext" value="">
-        </div>
-      </div>
 
-      <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Rental Amount</label>
-        <div class="col-sm-10">
-          <input id="agreement-rental-amount" type="text" readonly class="form-control-plaintext" value="">
-        </div>
-      </div>
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/web3.min.js"></script>
+  <script src="js/truffle-contract.js"></script>
+  <script src="js/app.js"></script>
+</body>
 
-      <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Rental Start Date</label>
-        <div class="col-sm-10">
-          <input id="agreement-rental-start-date" type="date" class="form-control-plaintext" value="">
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Rental Duration</label>
-        <div class="col-sm-10">
-          <select id="rental-duration">
-            <option>6 Months</option>
-            <option>1 Year</option>
-            <option>2 Years</option>
-          </select>
-        </div>
-      </div>
-
-      <div>
-        <button class="button btn-agreement" data-id="">Request</button>
-      </div>
-    </div>
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/web3.min.js"></script>
-    <script src="js/truffle-contract.js"></script>
-    <script src="js/app.js"></script>
-  </body>
 </html>
