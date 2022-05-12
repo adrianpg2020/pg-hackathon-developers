@@ -1,13 +1,46 @@
 App = {
   web3Provider: null,
   contracts: {},
+  user: null,
+  page: $("#page-content"),
+
+  showLoader: () => {
+    App.page.html("Loading...");
+  },
 
   init: async function() {
-    $.getJSON('../listings.json', function(data) {
-      // populate listings
-    });
-
+    // load listings
+    App.showLoader();
+    await App.loadAllListings();
     return await App.initWeb3();
+  },
+
+  loadAllListings: async function() {
+    const [listings, agents] = await Promise.all([
+      $.getJSON('../listings.json'), 
+      $.getJSON('../agents.json')
+    ]);
+
+    let html = `<div class="row">`
+    html += listings.map((i) => {
+      return `<div class="col-sm-4">
+        <div class="listing-card">
+          <img src="${i.media?.cover?.V550}" />
+          <h4>${i.localizedTitle}</h4> 
+          <button class="btn btn-primary">Rent</button>
+        </div>
+      </div>`
+    }).join('\n');
+    html += `</div>`
+    App.page.html(html);
+
+    console.log('Listings: ', listings);
+    console.log('Agents: ', agents);
+  },
+
+  loadMyListings: async function() {
+    App.showLoader();
+    console.log('My listing page: ');
   },
 
   initWeb3: async function() {
@@ -16,9 +49,11 @@ App = {
       App.web3Provider = window.ethereum;
       try {
         // Request account access
-        await window.ethereum.request({ method: "eth_requestAccounts" });;
+        App.user = await window.ethereum.request({ method: "eth_requestAccounts" });
+        console.log('Logged in user: ' +  App.user);
       } catch (error) {
         // User denied account access...
+        App.user = null;
         console.error("User denied account access")
       }
     }
@@ -56,6 +91,8 @@ App = {
 
   bindEvents: function() {
     $(document).on('click', '.btn-adopt', App.handleAdopt);
+    $(document).on('click', '.nav-homepage', App.loadAllListings);
+    $(document).on('click', '.nav-my-listings', App.loadMyListings);
   },
 
   //NOTE: Sample code, to be removed

@@ -1,0 +1,19 @@
+.listing-card {
+    padding: 15px;
+    border: 1px solid #e5e5e5;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+.listing-card h4  {
+    color: #2c2c2c;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.listing-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
