@@ -13,20 +13,26 @@ App = {
     // load listings
     App.showLoader();
     await App.loadAllListings();
-    return await App.initWeb3();
+    await App.initWeb3();
   },
 
-  populateAgreementForm: function (listing) {
+  loadAccount: async () => {
+    // Set the current blockchain account
+    App.account = web3.eth.accounts[0]
+  },
+
+
+  populateAgreementForm: function(listing) {
     App.pageAgreementForm.find('.listing-card img').attr('src', listing.media?.cover?.V550);
     App.pageAgreementForm.find('#agreement-listing-title').html(listing.localizedTitle);
     App.pageAgreementForm.find('#agreement-rental-amount').val(listing.price.pretty);
     App.pageAgreementForm.find('#agreement-landlord-name').val(listing.property.developer);
-    
+
   },
 
   loadAllListings: async function() {
     const [listings, agents] = await Promise.all([
-      $.getJSON('../listings.json'), 
+      $.getJSON('../listings.json'),
       $.getJSON('../agents.json')
     ]);
 
@@ -73,7 +79,7 @@ App = {
       try {
         // Request account access
         App.user = await window.ethereum.request({ method: "eth_requestAccounts" });
-        console.log('Logged in user: ' +  App.user);
+        console.log('Logged in user: ' + App.user);
       } catch (error) {
         // User denied account access...
         App.user = null;
@@ -90,6 +96,7 @@ App = {
     }
     web3 = new Web3(App.web3Provider);
 
+    await App.loadAccount();
     return App.initContract();
 
   },
@@ -107,60 +114,12 @@ App = {
     $(document).on('click', '.nav-homepage', App.loadAllListings);
     $(document).on('click', '.nav-my-listings', App.loadMyListings);
 
-    App.sampleFunc();
+    // App.sampleFunc();
   },
 
   sampleFunc: async function() {
-    await App.rentAgreement.testFunc();
+    console.log(await App.rentAgreement.testFunc({ from: App.account }));
   }
-
-  //NOTE: Sample code, to be removed
-
-  // markAdopted: function() {
-  //   var adoptionInstance;
-  //
-  //   App.contracts.Adoption.deployed().then(function(instance) {
-  //     adoptionInstance = instance;
-  //
-  //     return adoptionInstance.getAdopters.call();
-  //   }).then(function(adopters) {
-  //     for (i = 0; i < adopters.length; i++) {
-  //       if (adopters[i] !== '0x0000000000000000000000000000000000000000') {
-  //         $('.panel-pet').eq(i).find('button').text('Success').attr('disabled', true);
-  //       }
-  //     }
-  //   }).catch(function(err) {
-  //     console.log(err.message);
-  //   });
-  //
-  // },
-  //
-  // handleAdopt: function(event) {
-  //   event.preventDefault();
-  //
-  //   var petId = parseInt($(event.target).data('id'));
-  //
-  //   var adoptionInstance;
-  //
-  //   web3.eth.getAccounts(function(error, accounts) {
-  //     if (error) {
-  //       console.log(error);
-  //     }
-  //
-  //     var account = accounts[0];
-  //
-  //     App.contracts.Adoption.deployed().then(function(instance) {
-  //       adoptionInstance = instance;
-  //
-  //       // Execute adopt as a transaction by sending account
-  //       return adoptionInstance.adopt(petId, { from: account });
-  //     }).then(function(result) {
-  //       return App.markAdopted();
-  //     }).catch(function(err) {
-  //       console.log(err.message);
-  //     });
-  //   });
-  // }
 };
 
 $(function() {
