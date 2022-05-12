@@ -181,6 +181,14 @@ App = {
     // App.sampleFunc();
   },
 
+  createAgreement: async function(listingId, rent, startDate, duration, tenant, address) {
+    await App.rentAgreement.createAgreement(listingId, rent, startDate, duration, tenant, address);
+  },
+
+  getAgreement: async function(listingId) {
+    await App.rentAgreement.agreements(listingId);
+  },
+
   sampleFunc: async function() {
     console.log(await App.rentAgreement.testFunc({ from: App.account }));
   }
