@@ -3,10 +3,11 @@ const PG_FIREBASE_DB = 'https://pghackathon-default-rtdb.asia-southeast1.firebas
 App = {
   web3Provider: null,
   contracts: {},
-  user: null,
+  account: null,
   listings: [],
   agents: [],
   agreements: [],
+  draftAgreements: [],
 
   page: $("#page-content"),
   pageAgreementForm: $("#agreement-form"),
@@ -51,8 +52,9 @@ App = {
 
   loadAllListings: async function() {
     await App.getAgreements();
+    await App.getDraftAgreements();
 
-    App.agreements.forEach((item) => {
+    App.draftAgreements.forEach((item) => {
       const listing = App.listings.find((listing) => listing.id === item.listing_id);
       if(listing) {
         listing.draft = true;
@@ -92,14 +94,14 @@ App = {
     try {
       const agreementData = {
         'listing_id': App.pageAgreementForm.find('.btn-agreement').data('id'),
-        'user_id': (App.user) ? App.user[0] : null,
+        'user_id': App.account ?? null,
         'title': App.pageAgreementForm.find('#agreement-listing-title').html(),
         'tenant': App.pageAgreementForm.find('#tenant').val(),
         'agreement-rental-start-date': App.pageAgreementForm.find('#agreement-rental-start-date').val(),
         'agreement-rental-amount': App.pageAgreementForm.find('#agreement-rental-amount').val(),
         'rental-duration': App.pageAgreementForm.find("select#rental-duration option").filter(":selected").val(),  
       };
-      await App.savingAgreement(agreementData);
+      await App.saveDraftAgreement(agreementData);
       $('#agreement-form').modal('hide')
       App.loadAllListings();
     }catch (error) {
@@ -108,18 +110,22 @@ App = {
     }
   },
 
-  savingAgreement: async function(data) {
+  saveDraftAgreement: async function(data) {
     await axios.post(`${PG_FIREBASE_DB}/agreements.json`, data);
   },
 
-  getAgreements: async function() {
-    const {data} = await axios.get(`${PG_FIREBASE_DB}/agreements.json`);
-    App.agreements = Object.keys(data).map(key => {
-      return {
-        _id: key,
-        ...data[key]
-      }
-    });
+  getDraftAgreements: async function() {
+    try {
+      const {data} = await axios.get(`${PG_FIREBASE_DB}/agreements.json`);
+      App.draftAgreements = Object.keys(data).map(key => {
+        return {
+          _id: key,
+          ...data[key]
+        }
+      });
+    } catch(e) {
+      console.log(e);
+    }
   },
     
   showAgreementModel: async function(e) {
@@ -143,8 +149,9 @@ App = {
       App.web3Provider = window.ethereum;
       try {
         // Request account access
-        App.user = await window.ethereum.request({ method: "eth_requestAccounts" });
-        console.log('Logged in user: ' + App.user);
+        const [user] = await window.ethereum.request({ method: "eth_requestAccounts" });
+        App.account = user;
+        console.log('Logged in user: ' + user);
       } catch (error) {
         // User denied account access...
         App.user = null;
@@ -198,6 +205,10 @@ App = {
 
   getAgreement: async function(listingId) {
     await App.rentAgreement.agreements(listingId);
+  },
+
+  getAgreements: async function() {
+    
   },
 
   sampleFunc: async function() {
