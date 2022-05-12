@@ -5,7 +5,7 @@ App = {
   contracts: {},
   account: null,
   listings: [],
-  agents: [],
+  agents: {},
   agreements: [],
   draftAgreements: [],
 
@@ -15,6 +15,10 @@ App = {
 
   showLoader: () => {
     App.page.html("Loading...");
+  },
+
+  isAgent: () => {
+    return Object.values(App.agents).includes(App.account)
   },
 
   init: async function() {
@@ -61,20 +65,23 @@ App = {
       }
     });
 
+    const isAgent = App.isAgent();
+
     let cards = App.listings.map((i) => {
       let disabled = null;
       if(i.draft === true || i.rented === true) {
         disabled = "disabled";
       }
+      let button =  !isAgent ? `<button class="btn btn-primary show-agreement-model" 
+      data-listing-id="${i.id}" data-toggle="modal" ${disabled}   
+      data-target="#agreement-form">${i.rented ? 'Sold out' : 'Rent'}</button>` : '';
 
       return `<div class="col-sm-4">
       <div class="listing-card">
         <img src="${i.media?.cover?.V550}" />
         <h4>${i.localizedTitle}</h4>
         <div class="price">${i.price.pretty}</div>
-        <button class="btn btn-primary show-agreement-model" 
-        data-listing-id="${i.id}" data-toggle="modal" ${disabled}   
-        data-target="#agreement-form">Rent</button>
+        ${button}
       </div>
     </div>`;
     });
@@ -149,12 +156,9 @@ App = {
       App.web3Provider = window.ethereum;
       try {
         // Request account access
-        const [user] = await window.ethereum.request({ method: "eth_requestAccounts" });
-        App.account = user;
-        console.log('Logged in user: ' + user);
+        await window.ethereum.request({ method: "eth_requestAccounts" });
       } catch (error) {
         // User denied account access...
-        App.user = null;
         console.error("User denied account access")
       }
     }
