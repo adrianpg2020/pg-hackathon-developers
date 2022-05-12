@@ -1,3 +1,5 @@
+const PG_FIREBASE_DB = 'https://pghackathon-default-rtdb.asia-southeast1.firebasedatabase.app';
+
 App = {
   web3Provider: null,
   contracts: {},
@@ -90,10 +92,18 @@ App = {
 
   savingAgreements: function(data) {
     console.log(data);
+
+    fetch(`${PG_FIREBASE_DB}/agreements.json`, {
+      'method': 'POST',
+      'body': JSON.stringify(data),
+      'headers': {
+        'Content-Type': 'application/json',
+      }
+    });
   },
 
   getAgreements: function() {
-  
+    fetch(`${PG_FIREBASE_DB}/agreements.json`);
   },
     
   showAgreementModel: async function(e) {
