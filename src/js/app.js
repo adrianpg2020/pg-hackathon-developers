@@ -168,7 +168,7 @@ App = {
   },
 
   createAgreement: async function(listingId, rent, startDate, duration, tenant, address) {
-    await App.rentAgreement.createAgreement(listingId, rent, startDate, duration, tenant, address);
+    await App.rentAgreement.createAgreement(listingId, rent, startDate, duration, tenant, address, { from: App.account });
   },
 
   getAgreement: async function(listingId) {
