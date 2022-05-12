@@ -38,6 +38,11 @@ App = {
     App.pageAgreementForm.find('#agreement-rental-amount').val(listing.price.pretty);
     App.pageAgreementForm.find('#agreement-landlord-name').val(listing.property.developer);
     App.pageAgreementForm.find('.btn-agreement').data('id', listing.id);
+    /** add later 
+    $('#sign-agreement').on('click', () => {
+      App.createDoc(listing);
+    })
+    **/
   },
 
   loadAllListings: async function() {
@@ -135,6 +140,13 @@ App = {
     
     App.loadAllListings();
     return App.bindEvents();
+  },
+
+  createDoc: function(listing) {
+    var doc = new jsPDF();
+    doc.setFontSize(10);
+    doc.text(10, 10, `This is the rent agreement for the property ${listing.localizedTitle} decided to be rented out at ${listing.price.pretty}`);
+    doc.save(listing.localizedTitle);
   },
 
   bindEvents: function() {
