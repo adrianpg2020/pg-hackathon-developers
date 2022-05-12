@@ -94,29 +94,25 @@ App = {
 
   },
 
-  initContract: function() {
-    //NOTE: sample code, to be updated
-
-    // $.getJSON('Adoption.json', function(data) {
-    //   // Get the necessary contract artifact file and instantiate it with @truffle/contract
-    //   var AdoptionArtifact = data;
-    //   App.contracts.Adoption = TruffleContract(AdoptionArtifact);
-    //
-    //   // Set the provider for our contract
-    //   App.contracts.Adoption.setProvider(App.web3Provider);
-    //
-    //   // Use our contract to retrieve and mark the adopted pets
-    //   return App.markAdopted();
-    // });
+  initContract: async function() {
+    const rentAgreement = await $.getJSON('RentAgreement.json');
+    App.contracts.RentalAgreement = TruffleContract(rentAgreement);
+    App.contracts.RentalAgreement.setProvider(App.web3Provider);
+    App.rentAgreement = await App.contracts.RentalAgreement.deployed();
 
     return App.bindEvents();
   },
 
   bindEvents: function() {
-    $(document).on('click', '.btn-adopt', App.handleAdopt);
     $(document).on('click', '.nav-homepage', App.loadAllListings);
     $(document).on('click', '.nav-my-listings', App.loadMyListings);
+
+    App.sampleFunc();
   },
+
+  sampleFunc: async function() {
+    await App.rentAgreement.testFunc();
+  }
 
   //NOTE: Sample code, to be removed
 
