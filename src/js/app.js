@@ -21,7 +21,7 @@ App = {
     App.pageAgreementForm.find('#agreement-listing-title').html(listing.localizedTitle);
     App.pageAgreementForm.find('#agreement-rental-amount').val(listing.price.pretty);
     App.pageAgreementForm.find('#agreement-landlord-name').val(listing.property.developer);
-    
+    App.pageAgreementForm.find('.btn-agreement').data('id', listing.id);
   },
 
   loadAllListings: async function() {
@@ -64,6 +64,33 @@ App = {
   loadMyListings: async function() {
     App.showLoader();
     console.log('My listing page: ');
+  },
+
+  handleAgreement: async function() {
+    try {
+      const agreementData = {
+        'listing_id': App.pageAgreementForm.find('.btn-agreement').data('id'),
+        'user_id': App.user[0],
+        'title': App.pageAgreementForm.find('#agreement-listing-title').html(),
+        'tenant': App.pageAgreementForm.find('#tenant').val(),
+        'agreement-rental-start-date': App.pageAgreementForm.find('#agreement-rental-start-date').val(),
+        'agreement-rental-amount': App.pageAgreementForm.find('#agreement-rental-amount').val(),
+        'rental-duration': App.pageAgreementForm.find("select#rental-duration option").filter(":selected").val(),  
+      };
+      App.savingAgreements(agreementData);
+      App.loadAllListings();
+    }catch (error) {
+      console.log(error);
+      console.error("error in saving Agreement");
+    }
+  },
+
+  savingAgreements: function(data) {
+    console.log(data);
+  },
+
+  getAgreements: function() {
+
   },
 
   initWeb3: async function() {
@@ -116,6 +143,7 @@ App = {
     $(document).on('click', '.btn-adopt', App.handleAdopt);
     $(document).on('click', '.nav-homepage', App.loadAllListings);
     $(document).on('click', '.nav-my-listings', App.loadMyListings);
+    $(document).on('click', '.btn-agreement', App.handleAgreement);
   },
 
   //NOTE: Sample code, to be removed
