@@ -1,0 +1,22 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+build/Release
+
+artifacts/
+
+# parcel-bundler cache (https://parceljs.org/)
+cache/
+.cache
+.parcel-cache
+
+# Dependency directories
+node_modules/
+jspm_packages/
