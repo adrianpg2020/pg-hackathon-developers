@@ -22,3 +22,36 @@
     font-weight: bold;
     font-size: 16px;
 }
+
+
+
+#rental-acceptance > .control-bar {
+    background: #2c2c2c;
+    width: 100%;
+    padding: 10px 50px;
+    text-align: right;
+}
+
+#rental-acceptance > .container {
+    background: #cccccc;
+    width: 100%;
+    padding: 30px 50px;
+}
+
+#rental-acceptance > .container .inner-content {
+    background: white;
+    height: 1054px;
+}
+
+.agreement-letter  {
+    padding: 30px 50px;
+}
+
+.agreement-letter .heading {
+    text-align: center;
+    padding: 10px 0 30px 0;
+}
+
+.agreement-letter input {
+    border: none;
+}

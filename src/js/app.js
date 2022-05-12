@@ -10,6 +10,7 @@ App = {
 
   page: $("#page-content"),
   pageAgreementForm: $("#agreement-form"),
+  pageAcceptance: $("#rental-acceptance"),
 
   showLoader: () => {
     App.page.html("Loading...");
@@ -63,6 +64,7 @@ App = {
       if(i.draft === true || i.rented === true) {
         disabled = "disabled";
       }
+
       return `<div class="col-sm-4">
       <div class="listing-card">
         <img src="${i.media?.cover?.V550}" />
@@ -127,6 +129,14 @@ App = {
     App.populateAgreementForm(listing);
   },
 
+  toggleAcceptancePage: function() {
+    if (App.pageAcceptance.is(':visible')) {
+      App.pageAcceptance.hide();
+    } else {
+      App.pageAcceptance.show();
+    }
+  },
+
   initWeb3: async function() {
     // Modern dapp browsers...
     if (window.ethereum) {
@@ -178,6 +188,7 @@ App = {
     $(document).on('click', '.nav-my-listings', App.loadMyListings);
     $(document).on('click', '.btn-agreement', App.handleAgreement);
     $(document).on('click', '.show-agreement-model', App.showAgreementModel);
+    $(document).on('click', '#toggle-acceptance-page', App.toggleAcceptancePage);
     // App.sampleFunc();
   },
 
