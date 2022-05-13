@@ -93,20 +93,31 @@ App = {
   },
 
   loadMyListings: async function() {
+    let isAgent = App.isAgent();
+    console.log(isAgent)
     App.showLoader();
-    await App.getDraftAgreements();
-    App.draftAgreements = App.draftAgreements.filter(ag => ag.listing_id)
-    let rows = App.draftAgreements.map(ag => {
-      let button =  `<button class="btn btn-primary sign-button" 
-        data-id="${ag._id}">Sign</button>`;
-      return `<tr>
-        <td>${ag.listing_id}</td>
-        <td>${ag.title}</td>
-        <td>${ag['agreement-rental-amount']}</td>
-        <td>${button}</td>
-      </tr>`
-    })
-    $('#tableBody').html(rows)
+    if(!isAgent){
+      $('table').hide()
+    }
+    else {
+      App.page.html('')
+      await App.getDraftAgreements();
+      App.draftAgreements = App.draftAgreements.filter(ag => ag.listing_id)
+      let rows = App.draftAgreements.map(ag => {
+        let button =  `<button class="btn btn-primary sign-button" 
+          data-id="${ag._id}">Sign</button>`;
+        return `<tr>
+          <td>${ag.listing_id}</td>
+          <td>${ag.title}</td>
+          <td>${ag.tenant}</td>
+          <td>${ag['rental-duration']}</td>
+          <td>${ag['agreement-rental-amount']}</td>
+          <td>${button}</td>
+        </tr>`
+      })
+      $('table').show()
+      $('#tableBody').html(rows)
+    }
   },
 
   handleAgreement: async function() {
