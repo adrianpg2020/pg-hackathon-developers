@@ -15,6 +15,7 @@ App = {
 
   showLoader: () => {
     App.page.html("Loading...");
+    $("#page-table").hide();
   },
 
   isAgent: () => {
@@ -118,6 +119,7 @@ App = {
       })
       $('#tableBody').html(rows)
     }
+    $("#page-table").show();
   },
 
   handleAgreement: async function() {
