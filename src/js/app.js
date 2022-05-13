@@ -94,7 +94,19 @@ App = {
 
   loadMyListings: async function() {
     App.showLoader();
-    console.log('My listing page: ');
+    await App.getDraftAgreements();
+    App.draftAgreements = App.draftAgreements.filter(ag => ag.listing_id)
+    let rows = App.draftAgreements.map(ag => {
+      let button =  `<button class="btn btn-primary sign-button" 
+        data-id="${ag._id}">Sign</button>`;
+      return `<tr>
+        <td>${ag.listing_id}</td>
+        <td>${ag.title}</td>
+        <td>${ag['agreement-rental-amount']}</td>
+        <td>${button}</td>
+      </tr>`
+    })
+    $('#tableBody').html(rows)
   },
 
   handleAgreement: async function() {
