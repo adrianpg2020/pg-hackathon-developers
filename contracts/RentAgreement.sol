@@ -6,7 +6,7 @@ contract RentAgreement {
     address tenant;
     uint createdTimestamp;
     uint rent;
-    uint duration;
+    string duration;
     string unitAddress;
   }
 
@@ -15,7 +15,7 @@ contract RentAgreement {
   enum State {Created, Started, Terminated}
   State public state;
 
-  function createAgreement(uint _listingId, uint _rent, uint _startDate, uint _duration, address _tenant, string memory _address) public {
+  function createAgreement(uint _listingId, uint _rent, string memory _startDate, string memory _duration, address _tenant, string memory _address) public {
     agreements[_listingId] = Agreement(msg.sender, _tenant, block.timestamp, _rent, _duration, _address);
   }
 

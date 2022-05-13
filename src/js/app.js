@@ -44,7 +44,7 @@ App = {
   populateAgreementForm: function(listing) {
     App.pageAgreementForm.find('.listing-card img').attr('src', listing.media?.cover?.V550);
     App.pageAgreementForm.find('#agreement-listing-title').html(listing.localizedTitle);
-    App.pageAgreementForm.find('#agreement-rental-amount').val(listing.price.pretty);
+    App.pageAgreementForm.find('#agreement-rental-amount').val(listing.price.value);
     App.pageAgreementForm.find('#agreement-landlord-name').val(listing.property.developer);
     App.pageAgreementForm.find('.btn-agreement').data('id', listing.id);
     /** add later 
@@ -104,18 +104,18 @@ App = {
       await App.getDraftAgreements();
       App.draftAgreements = App.draftAgreements.filter(ag => ag.listing_id)
       let rows = App.draftAgreements.map(ag => {
-        let button =  `<button class="btn btn-primary sign-button" 
+        let button = ag.rented === true ? 
+          `<button class="btn btn-success toggle-acceptance-page" 
+          data-id="${ag._id}">View signed Agreement</button>`
+          : `<button class="btn btn-primary btn-sign-agreement" 
           data-id="${ag._id}">Sign</button>`;
         return `<tr>
           <td>${ag.listing_id}</td>
           <td>${ag.title}</td>
-          <td>${ag.tenant}</td>
-          <td>${ag['rental-duration']}</td>
           <td>${ag['agreement-rental-amount']}</td>
           <td>${button}</td>
         </tr>`
       })
-      $('table').show()
       $('#tableBody').html(rows)
     }
   },
@@ -173,12 +173,14 @@ App = {
     App.populateAgreementForm(listing);
   },
 
-  toggleAcceptancePage: function() {
-    if (App.pageAcceptance.is(':visible')) {
-      App.pageAcceptance.hide();
-    } else {
-      App.pageAcceptance.show();
-    }
+  toggleAcceptancePage: function(e) {
+    const id = e.target.dataset.id;
+    const agreement = App.draftAgreements.find(ag => ag._id === id);
+    App.pageAcceptance.find("#agreement-tenant .value").html(agreement.tenant);
+    App.pageAcceptance.find("#agreement-rental-amount .value").html(agreement['agreement-rental-amount']);
+    App.pageAcceptance.find("#agreement-rental-start-date .value").html(agreement['agreement-rental-start-date']);
+    App.pageAcceptance.find("#agreement-rental-duration .value").html(agreement['rental-duration']);
+    App.pageAcceptance.show();
   },
 
   initWeb3: async function() {
@@ -230,7 +232,7 @@ App = {
     $(document).on('click', '.nav-my-listings', App.loadMyListings);
     $(document).on('click', '.btn-agreement', App.handleAgreement);
     $(document).on('click', '.show-agreement-model', App.showAgreementModel);
-    $(document).on('click', '#toggle-acceptance-page', App.toggleAcceptancePage);
+    $(document).on('click', '.toggle-acceptance-page', App.toggleAcceptancePage);
     $(document).on('click', '.btn-sign-agreement', App.signAgreement);
   },
 
@@ -243,7 +245,8 @@ App = {
         agreement['agreement-rental-amount'],
         agreement['agreement-rental-start-date'],  
         agreement['rental-duration'], 
-        agreement['user_id']
+        agreement['user_id'],
+        'sg'
     );
     await App.signDraftAgreement(agreement._id);
   },
