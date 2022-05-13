@@ -97,7 +97,7 @@ App = {
     await App.getDraftAgreements();
     App.draftAgreements = App.draftAgreements.filter(ag => ag.listing_id)
     let rows = App.draftAgreements.map(ag => {
-      let button =  `<button class="btn btn-primary sign-button" 
+      let button =  `<button class="btn btn-primary btn-sign-agreement" 
         data-id="${ag._id}">Sign</button>`;
       return `<tr>
         <td>${ag.listing_id}</td>
@@ -118,7 +118,8 @@ App = {
         'tenant': App.pageAgreementForm.find('#tenant').val(),
         'agreement-rental-start-date': App.pageAgreementForm.find('#agreement-rental-start-date').val(),
         'agreement-rental-amount': App.pageAgreementForm.find('#agreement-rental-amount').val(),
-        'rental-duration': App.pageAgreementForm.find("select#rental-duration option").filter(":selected").val(),  
+        'rental-duration': App.pageAgreementForm.find("select#rental-duration option").filter(":selected").val(),
+        draft: true
       };
       await App.saveDraftAgreement(agreementData);
       $('#agreement-form').modal('hide')
@@ -131,6 +132,13 @@ App = {
 
   saveDraftAgreement: async function(data) {
     await axios.post(`${PG_FIREBASE_DB}/agreements.json`, data);
+  },
+
+  signDraftAgreement: async function(id) {
+    await axios.patch(`${PG_FIREBASE_DB}/agreements/${id}.json`, {
+      draft: false,
+      rented: true
+    });
   },
 
   getDraftAgreements: async function() {
@@ -212,7 +220,21 @@ App = {
     $(document).on('click', '.btn-agreement', App.handleAgreement);
     $(document).on('click', '.show-agreement-model', App.showAgreementModel);
     $(document).on('click', '#toggle-acceptance-page', App.toggleAcceptancePage);
-    // App.sampleFunc();
+    $(document).on('click', '.btn-sign-agreement', App.signAgreement);
+  },
+
+  signAgreement: async function(e) {
+    e.preventDefault();
+    const id = $(this).data('id');
+    const agreement = App.draftAgreements.find(i => i._id === id);
+    await App.createAgreement(
+        agreement.listing_id, 
+        agreement['agreement-rental-amount'],
+        agreement['agreement-rental-start-date'],  
+        agreement['rental-duration'], 
+        agreement['user_id']
+    );
+    await App.signDraftAgreement(agreement._id);
   },
 
   createAgreement: async function(listingId, rent, startDate, duration, tenant, address) {
